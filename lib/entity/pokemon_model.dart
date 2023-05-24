@@ -1,7 +1,7 @@
 class PokemonModel {
   final String name;
   final String image;
-  final List<String> types;
+  final List<Type> types;
   final int weight;
   final int height;
 
@@ -13,19 +13,43 @@ class PokemonModel {
     required this.height,
   });
 
-  PokemonModel fromJson(Map<String, dynamic> json) => PokemonModel(
-        name: json["name"] as String,
-        image: json["image"] as String,
-        types: json["types"] as List<String>,
-        height: json["height"] as int,
-        weight: json["weight"] as int,
+  factory PokemonModel.fromJson(Map<String, dynamic> json) => PokemonModel(
+        name: json["name"],
+        image: json["sprites"]["other"]["official-artwork"]["front_default"],
+        types: List<Type>.from(json["types"].map((x) => Type.fromJson(x))),
+        height: json["height"],
+        weight: json["weight"],
       );
+}
 
-  Map<String, dynamic> toJson() => {
-        "name": name,
-        "image": image,
-        "types": types,
-        "height": height,
-        "weight": weight,
-      };
+class PokemonList {
+  final String name;
+  final String url;
+
+  PokemonList({
+    required this.name,
+    required this.url,
+  });
+
+  factory PokemonList.fromJson(Map<String, dynamic> json) => PokemonList(
+        name: json["name"],
+        url: json["url"],
+      );
+}
+
+class Type {
+  Type({
+    required this.slot,
+    required this.type,
+  });
+
+  final int slot;
+  final PokemonList type;
+
+  factory Type.fromJson(Map<String, dynamic> json) => Type(
+        slot: json["slot"],
+        type: PokemonList.fromJson(
+          json["type"],
+        ),
+      );
 }

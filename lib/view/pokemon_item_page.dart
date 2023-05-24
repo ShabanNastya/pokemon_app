@@ -1,55 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:pokemon_app/entity/pokemon_model.dart';
 
 class PokemonItemPage extends StatelessWidget {
-  final String assetImage;
-  final String name;
-  final String tag;
+  final PokemonModel pokemon;
 
   const PokemonItemPage({
     super.key,
-    required this.assetImage,
-    required this.name,
-    required this.tag,
+    required this.pokemon,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Hero(
-            tag: tag,
-            child: ClipRRect(
-              child: SizedBox(
-                child: Image.asset(
-                  assetImage,
-                  fit: BoxFit.cover,
-                ),
+      body: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        elevation: 10,
+        child: Column(
+          children: <Widget>[
+            Text(
+              pokemon.name,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
               ),
             ),
-          ),
-          Text(
-            name,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
+            Image.network(
+              pokemon.image,
+              height: 250,
             ),
-          ),
-          const Row(
-            children: [
-              Text('Weight'),
-              Text('5'),
-            ],
-          ),
-          const Row(
-            children: [
-              Text('Height'),
-              Text('15'),
-            ],
-          ),
-        ],
+            _measureRow(
+              'Weight:',
+              '${pokemon.weight / 10} in kg',
+            ),
+            _measureRow(
+              'Height:',
+              '${pokemon.height * 10} in cm',
+            ),
+            const Text(
+              'Types',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(
+              height: 50,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: pokemon.types.length,
+                itemBuilder: (context, index) {
+                  return Chip(
+                    label: Text(
+                      pokemon.types[index].type.name,
+                    ),
+                    backgroundColor: Colors.lightBlueAccent,
+                    elevation: 8,
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Row _measureRow(String title, String measure) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Text(title),
+        Text(measure),
+      ],
     );
   }
 }
